@@ -1,0 +1,21 @@
+sudo: false
+
+addons:
+  sonarcloud:
+    organization: "sonarcloud"
+    token:
+      secure: "x2TuSw5zeAIaLleJdmsm2YxzZLE0NhcYlkCRte+fdoTaVqLz58mLynJbtZZY2UEpos0IZhyjWxxV2I9MDle+5YKewGTvqOSp0AjXvea7K3KYW1dllDZLyeWqs6mF1jT8d0aY3PIfgUpOaA/A7+QRazZTaWt7hNoI2mwR8p7mrUMI+U/dPH3x9A7zCvHo3du4hVxMbAXiLDioxZwBzNUr80wWbTkXOv5cOCBR5aAyusVX1C1BFnCtE9hTgsn9oCR/PD5AJkPaYeuvgInIyTKXInyqKt2fWLs6PnXaRAiM/jI432aus//6lFhL3vPeI2EmhQRKofar3Q9JScdWIxYkJELa3LwUE5T1abpJSvJ3nQNnLfYBDl9gVCrAOJVxNc93TtgEQklLoQzJBzxTDAbHL35PR+kB6fozxPO6kyvTBHWDYswO87GNcgIkXiNZjoFr5mldKb80HkMzy+ntmg82eFAlAFefzRwBZTc7YKz+Rww65SwgjhmSnsPlysNvHSMxpzqjPZ23tIHgM7t7LK58Trxg3TX3u4Yl2nmPvszQN53xtFKMilFHpl2y/1uoa+1dlN0bNPnVC2XVuEiAQNBAlDL8NnuTinBNCSNjC8rcOuhy3oLHFo4nfnK1txGdO81Se0rE5VHAylDzhRV5eVEdzrom6c+M3hQsL4PsZeLbc0A="
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - cd ..
+  - NUMBER_OF_PROCESSORS=$(nproc --all)
+  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
+  - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
+
+cache:
+  directories:
+    - $HOME/.sonar/cache
+    - $HOME/.cfamily
